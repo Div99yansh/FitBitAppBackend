@@ -10,6 +10,9 @@ pydantic>=2.5.0
 # Python multipart for handling form data (if needed later)
 python-multipart>=0.0.6
 
+# Google Gemini API for nutrition analysis
+google-generativeai>=0.3.2
+
 # Optional: For better development experience
 # python-dotenv==1.0.0  # For environment variables
 
