@@ -1,0 +1,18 @@
+# FastAPI framework
+fastapi>=0.104.1
+
+# ASGI server for running FastAPI
+uvicorn[standard]>=0.24.0
+
+# Data validation and serialization
+pydantic>=2.5.0
+
+# Python multipart for handling form data (if needed later)
+python-multipart>=0.0.6
+
+# Optional: For better development experience
+# python-dotenv==1.0.0  # For environment variables
+
+# Optional: For testing (uncomment if you want to add tests)
+# pytest==7.4.3
+# httpx==0.25.2  # For testing FastAPI endpoints
