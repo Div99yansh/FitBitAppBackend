@@ -1,0 +1,146 @@
+# Python
+*\__pycache__\
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables and secrets
+.env.local
+.env.production
+.env.development
+*.key
+secrets.json
+
+# API Keys (be extra safe)
+*api_key*
+*API_KEY*
+config.py
+settings.py
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# FastAPI specific
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+*.out
+*.err
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+database.db
+app.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Docker (if you add Docker later)
+Dockerfile.*
+docker-compose*.yml
+.dockerignore
+
+# Node modules (if you add any frontend build tools)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+
+# Profiling
+*.prof
+
+# Celery (if you add background tasks)
+celerybeat-schedule
+celerybeat.pid
+
+# Redis dump (if you add Redis)
+dump.rdb
+
+# Local development
+local_settings.py
+local_config.py
+
+# Testing
+.pytest_cache/
+test_*.db
+*_test.db
