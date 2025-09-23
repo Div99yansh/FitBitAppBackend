@@ -1,9 +1,13 @@
 import json
 import os
+from dotenv import load_dotenv
 import logging
 from typing import Dict, Any, Optional
 import google.generativeai as genai
 from pydantic import BaseModel
+
+#loading dotenv
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -26,9 +30,10 @@ class GeminiNutritionService:
         Args:
             api_key: Gemini API key. If None, will try to get from environment variable
         """
-        self.api_key = api_key or os.getenv("GEMINI_API_KEY")
+        self.api_key = os.getenv("GEMINI_API_KEY")
+        logger.info(f"API key is : {self.api_key}")
         if not self.api_key:
-            raise ValueError("Gemini API key is required. Set GEMINI_API_KEY environment variable or pass it directly.")
+            raise ValueError(f"Gemini API key is required. Set GEMINI_API_KEY environment variable or pass it directly. {self.api_key}")
         
         # Configure Gemini
         genai.configure(api_key=self.api_key)
