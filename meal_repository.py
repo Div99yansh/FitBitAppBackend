@@ -2,31 +2,9 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Any
 from sqlalchemy.orm import Session
 from database import MealDB
-from pydantic import BaseModel
+from schemas.meal_schemas import Meal, MealCreate
 from datetime import datetime
 import uuid
-
-# Pydantic models for API
-class MealBase(BaseModel):
-    name: str
-    calories: Optional[float] = None
-    protein: Optional[float] = None
-    fats: Optional[float] = None
-    carbohydrates: Optional[float] = None
-    fiber: Optional[float] = None
-    sugar: Optional[float] = None
-    sodium: Optional[float] = None
-
-class Meal(MealBase):
-    id: str
-    created_at: datetime
-    updated_at: datetime
-    
-    class Config:
-        from_attributes = True
-
-class MealCreate(MealBase):
-    pass
 
 # Abstract repository interface (for easy MongoDB migration)
 class MealRepositoryInterface(ABC):
