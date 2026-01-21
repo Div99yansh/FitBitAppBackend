@@ -333,6 +333,12 @@ async def save_user_day_meals(
     try:
         result = await manager.save_user_day_meals(current_user.id, request)
         return result
+    except ValueError as ve:
+        logger.warning(f"Invalid meal IDs in save request: {str(ve)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(ve)
+        )
     except Exception as e:
         logger.error(f"API error saving user day meals: {str(e)}")
         raise HTTPException(

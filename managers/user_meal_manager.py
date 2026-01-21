@@ -125,29 +125,30 @@ class UserMealManager:
         self, user_id: str, request: SaveDayMealsRequest
     ) -> SaveDayMealsResponse:
         """
-        Save/replace meals for a user on a specific date and meal type.
+        Save/replace meal associations for a user on a specific date and meal type.
+        Links existing meals to the date/mealType - does not create new meals.
 
         Args:
             user_id: The authenticated user's ID
-            request: Save request with date, mealType, and meals
+            request: Save request with date, mealType, and mealIds
 
         Returns:
-            SaveDayMealsResponse: Confirmation of saved meals
+            SaveDayMealsResponse: Confirmation of saved associations
         """
         try:
             count = await self.repository.save_day_meals(
                 user_id=user_id,
                 date=request.date,
                 meal_type=request.mealType,
-                meals=request.meals
+                meal_ids=request.mealIds
             )
 
             logger.info(
-                f"Saved {count} meals for user {user_id} on {request.date} ({request.mealType})"
+                f"Saved {count} meal associations for user {user_id} on {request.date} ({request.mealType})"
             )
 
             return SaveDayMealsResponse(
-                message=f"Successfully saved {count} meals",
+                message=f"Successfully saved {count} meal associations",
                 date=request.date,
                 mealType=request.mealType,
                 totalMeals=count

@@ -25,10 +25,10 @@ class DayMealsResponse(BaseModel):
 
 
 class SaveDayMealsRequest(BaseModel):
-    """Schema for saving day meals request"""
+    """Schema for saving day meals request - links existing meals to a date/mealType"""
     date: str = Field(..., pattern=r"^\d{4}-\d{2}-\d{2}$", description="Date in YYYY-MM-DD format")
     mealType: str = Field(..., pattern=r"^(breakfast|lunch|dinner)$", description="Meal type: breakfast, lunch, or dinner")
-    meals: List[MealInput] = Field(..., description="List of meals to save")
+    mealIds: List[str] = Field(..., description="List of meal IDs to associate with this date/mealType")
 
 
 class SaveDayMealsResponse(BaseModel):

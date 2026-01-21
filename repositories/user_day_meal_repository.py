@@ -3,7 +3,7 @@ from typing import List, Optional, Dict, Any
 from sqlalchemy.orm import Session
 from database import MealDB, UserDayMealDB
 from schemas.meal_schemas import Meal
-from schemas.user_day_meal_schemas import DayMealsResponse, MealInput
+from schemas.user_day_meal_schemas import DayMealsResponse
 from datetime import datetime
 import uuid
 
@@ -28,9 +28,9 @@ class UserDayMealRepositoryInterface(ABC):
 
     @abstractmethod
     async def save_day_meals(
-        self, user_id: str, date: str, meal_type: str, meals: List[MealInput]
+        self, user_id: str, date: str, meal_type: str, meal_ids: List[str]
     ) -> int:
-        """Save/replace day meals for a user, returns count of meals saved"""
+        """Save/replace day meal associations for a user, returns count of associations created"""
         pass
 
 
@@ -97,12 +97,38 @@ class SQLAlchemyUserDayMealRepository(UserDayMealRepositoryInterface):
         )
 
     async def save_day_meals(
-        self, user_id: str, date: str, meal_type: str, meals: List[MealInput]
+        self, user_id: str, date: str, meal_type: str, meal_ids: List[str]
     ) -> int:
         """
-        Save/replace day meals for a user.
-        Removes existing entries for the user/date/meal_type combo and adds new ones.
+        Save/replace day meal associations for a user.
+        Removes existing entries for the user/date/meal_type combo and creates new associations.
+        Only links to existing meals - does not create new meal records.
+
+        Raises:
+            ValueError: If any meal ID is not found or doesn't belong to the user
         """
+        if not meal_ids:
+            raise ValueError("No meal IDs provided")
+
+        # Validate all meal IDs first before making any changes
+        not_found_ids = []
+        valid_meals = []
+
+        for meal_id in meal_ids:
+            meal = self.db.query(MealDB).filter(
+                MealDB.id == meal_id,
+                MealmDB.user_id == user_id
+            ).first()
+
+            if meal:
+                valid_meals.append(meal)
+            else:
+                not_found_ids.append(meal_id)
+
+        # If any meal IDs are invalid, raise an error
+        if not_found_ids:
+            raise ValueError(f"Meal IDs not found or don't belong to user: {', '.join(not_found_ids)}")
+
         # Remove existing entries for this user/date/meal_type
         existing_entries = (
             self.db.query(UserDayMealDB)
@@ -117,35 +143,16 @@ class SQLAlchemyUserDayMealRepository(UserDayMealRepositoryInterface):
         for entry in existing_entries:
             self.db.delete(entry)
 
-        # Create new meals and day meal entries
-        count = 0
-        for meal_input in meals:
-            # Create the meal
-            meal_id = str(uuid.uuid4())
-            db_meal = MealDB(
-                id=meal_id,
-                name=meal_input.name,
-                calories=meal_input.calories,
-                protein=meal_input.protein,
-                fats=meal_input.fats,
-                carbohydrates=meal_input.carbohydrates,
-                fiber=meal_input.fiber,
-                sugar=meal_input.sugar,
-                sodium=meal_input.sodium,
-                user_id=user_id
-            )
-            self.db.add(db_meal)
-
-            # Create the day meal entry
+        # Create day meal entries linking to existing meals
+        for meal in valid_meals:
             day_meal_entry = UserDayMealDB(
                 id=str(uuid.uuid4()),
                 user_id=user_id,
-                meal_id=meal_id,
+                meal_id=meal.id,
                 date=date,
                 meal_type=meal_type
             )
             self.db.add(day_meal_entry)
-            count += 1
 
         self.db.commit()
-        return count
+        return len(valid_meals)
