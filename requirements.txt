@@ -17,6 +17,10 @@ python-multipart>=0.0.6
 # Google Gemini API for nutrition analysis
 google-generativeai>=0.3.2
 
+# Authentication
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
 # Optional: For better development experience
 # python-dotenv==1.0.0  # For environment variables
 

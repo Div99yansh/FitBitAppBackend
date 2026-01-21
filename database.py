@@ -1,15 +1,13 @@
-from sqlalchemy import create_engine, Column, String, Float, DateTime
+from sqlalchemy import create_engine, Column, String, Float, DateTime, ForeignKey, Integer
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
 import uuid
-
-# Database configuration
-SQLITE_DATABASE_URL = "sqlite:///./meals.db"
+from config import settings
 
 # Create engine
 engine = create_engine(
-    SQLITE_DATABASE_URL, 
+    settings.database_url, 
     connect_args={"check_same_thread": False}  # Needed for SQLite
 )
 
@@ -19,7 +17,24 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Create base class
 Base = declarative_base()
 
-# Meal model
+# User model
+class UserDB(Base):
+    __tablename__ = "users"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = Column(String, nullable=False, index=True)
+    email = Column(String, unique=True, nullable=False, index=True)
+    age = Column(Integer, nullable=True)
+    password_hash = Column(String, nullable=True)  # nullable for existing users
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationship to meals
+    meals = relationship("MealDB", back_populates="user")
+    # Relationship to day meals
+    day_meals = relationship("UserDayMealDB", back_populates="user")
+
+# Meal model (updated with user relationship)
 class MealDB(Base):
     __tablename__ = "meals"
     
@@ -32,8 +47,35 @@ class MealDB(Base):
     fiber = Column(Float, nullable=True)
     sugar = Column(Float, nullable=True)
     sodium = Column(Float, nullable=True)
+    
+    # Foreign key to user (nullable for backward compatibility)
+    user_id = Column(String, ForeignKey("users.id"), nullable=True)
+    
+    # Relationship
+    user = relationship("UserDB", back_populates="meals")
+    # Relationship to day meal entries
+    day_meal_entries = relationship("UserDayMealDB", back_populates="meal")
+
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+# User Day Meal model (junction table for user-date-meal associations)
+class UserDayMealDB(Base):
+    __tablename__ = "user_day_meals"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    meal_id = Column(String, ForeignKey("meals.id"), nullable=False, index=True)
+    date = Column(String, nullable=False, index=True)  # YYYY-MM-DD
+    meal_type = Column(String, nullable=False)  # breakfast, lunch, dinner
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("UserDB", back_populates="day_meals")
+    meal = relationship("MealDB", back_populates="day_meal_entries")
+
 
 # Create tables
 def create_tables():

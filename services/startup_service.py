@@ -1,6 +1,6 @@
 import logging
 from database import create_tables, get_db
-from meal_repository import SQLAlchemyMealRepository
+from repositories.meal_repository import SQLAlchemyMealRepository
 
 logger = logging.getLogger(__name__)
 
@@ -11,6 +11,7 @@ class StartupService:
     async def initialize_database():
         """Initialize database and add sample data if needed"""
         try:
+            
             logger.info("Creating database tables...")
             create_tables()
             

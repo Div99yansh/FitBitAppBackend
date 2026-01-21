@@ -43,16 +43,16 @@ class SQLAlchemyMealRepository(MealRepositoryInterface):
         self.db.commit()
         self.db.refresh(db_meal)
         
-        return Meal.from_orm(db_meal)
+        return Meal.model_validate(db_meal)
     
     async def get_all_meals(self) -> List[Meal]:
         db_meals = self.db.query(MealDB).order_by(MealDB.created_at.desc()).all()
-        return [Meal.from_orm(meal) for meal in db_meals]
+        return [Meal.model_validate(meal) for meal in db_meals]
     
     async def get_meal_by_id(self, meal_id: str) -> Optional[Meal]:
         db_meal = self.db.query(MealDB).filter(MealDB.id == meal_id).first()
         if db_meal:
-            return Meal.from_orm(db_meal)
+            return Meal.model_validate(db_meal)
         return None
     
     async def update_meal(self, meal_id: str, meal_data: Dict[str, Any]) -> Optional[Meal]:
@@ -69,7 +69,7 @@ class SQLAlchemyMealRepository(MealRepositoryInterface):
         self.db.commit()
         self.db.refresh(db_meal)
         
-        return Meal.from_orm(db_meal)
+        return Meal.model_validate(db_meal)
     
     async def delete_meal(self, meal_id: str) -> bool:
         db_meal = self.db.query(MealDB).filter(MealDB.id == meal_id).first()

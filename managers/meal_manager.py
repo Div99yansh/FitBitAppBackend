@@ -1,6 +1,6 @@
 import logging
 from typing import List, Optional, Dict, Any
-from meal_repository import MealRepositoryInterface
+from repositories.meal_repository import MealRepositoryInterface
 from schemas.meal_schemas import Meal, MealCreate
 from gemini_nutrition import GeminiNutritionServiceSync
 from config import settings

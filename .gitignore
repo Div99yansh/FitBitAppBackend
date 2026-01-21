@@ -144,3 +144,7 @@ local_config.py
 .pytest_cache/
 test_*.db
 *_test.db
+
+.claude/
+
+*.md
