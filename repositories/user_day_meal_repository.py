@@ -117,7 +117,7 @@ class SQLAlchemyUserDayMealRepository(UserDayMealRepositoryInterface):
         for meal_id in meal_ids:
             meal = self.db.query(MealDB).filter(
                 MealDB.id == meal_id,
-                MealmDB.user_id == user_id
+                MealDB.user_id == user_id
             ).first()
 
             if meal:
