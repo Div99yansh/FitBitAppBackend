@@ -33,6 +33,10 @@ class UserDB(Base):
     meals = relationship("MealDB", back_populates="user")
     # Relationship to day meals
     day_meals = relationship("UserDayMealDB", back_populates="user")
+    # Relationship to workouts
+    workouts = relationship("WorkoutDB", back_populates="user")
+    # Relationship to day workouts
+    day_workouts = relationship("UserDayWorkoutDB", back_populates="user")
 
 # Meal model (updated with user relationship)
 class MealDB(Base):
@@ -75,6 +79,44 @@ class UserDayMealDB(Base):
     # Relationships
     user = relationship("UserDB", back_populates="day_meals")
     meal = relationship("MealDB", back_populates="day_meal_entries")
+
+
+# Workout model
+class WorkoutDB(Base):
+    __tablename__ = "workouts"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = Column(String, nullable=False, index=True)
+    reps = Column(Integer, nullable=True)
+    duration = Column(Float, nullable=True)  # Duration in minutes
+
+    # Foreign key to user (nullable for backward compatibility)
+    user_id = Column(String, ForeignKey("users.id"), nullable=True)
+
+    # Relationship
+    user = relationship("UserDB", back_populates="workouts")
+    # Relationship to day workout entries
+    day_workout_entries = relationship("UserDayWorkoutDB", back_populates="workout")
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+# User Day Workout model (junction table for user-date-workout associations)
+class UserDayWorkoutDB(Base):
+    __tablename__ = "user_day_workouts"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=False, index=True)
+    workout_id = Column(String, ForeignKey("workouts.id"), nullable=False, index=True)
+    date = Column(String, nullable=False, index=True)  # YYYY-MM-DD
+    workout_type = Column(String, nullable=False)  # upperBody, lowerBody, core, fullBody
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = relationship("UserDB", back_populates="day_workouts")
+    workout = relationship("WorkoutDB", back_populates="day_workout_entries")
 
 
 # Create tables

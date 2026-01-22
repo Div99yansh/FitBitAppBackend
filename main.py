@@ -17,6 +17,7 @@ from controllers.meal_controller import router as meal_router
 from controllers.health_controller import router as health_router
 from controllers.user_controller import router as user_router
 from controllers.auth_controller import router as auth_router
+from controllers.workout_controller import router as workout_router
 
 # Import services
 from services.startup_service import StartupService
@@ -57,6 +58,7 @@ def create_app() -> FastAPI:
     app.include_router(auth_router)
     app.include_router(meal_router)
     app.include_router(user_router)
+    app.include_router(workout_router)
     
     # Application event handlers
     @app.on_event("startup")
