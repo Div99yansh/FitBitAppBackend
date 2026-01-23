@@ -41,7 +41,6 @@ secrets.json
 # API Keys (be extra safe)
 *api_key*
 *API_KEY*
-config.py
 settings.py
 
 # IDE and Editor files
