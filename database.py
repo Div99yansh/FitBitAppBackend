@@ -5,14 +5,19 @@ from datetime import datetime
 import uuid
 from config import settings
 
+# Get database URL and fix Render's postgres:// to postgresql:// for SQLAlchemy 2.0+
+database_url = settings.database_url
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
 # Create engine (SQLite requires check_same_thread=False, PostgreSQL does not)
-if settings.database_url.startswith("sqlite"):
+if database_url.startswith("sqlite"):
     engine = create_engine(
-        settings.database_url,
+        database_url,
         connect_args={"check_same_thread": False}
     )
 else:
-    engine = create_engine(settings.database_url)
+    engine = create_engine(database_url)
 
 # Create session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

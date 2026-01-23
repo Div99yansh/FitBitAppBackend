@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from datetime import datetime
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from database import get_db
 from schemas.meal_schemas import HealthResponse
@@ -20,7 +21,7 @@ async def health_check(db: Session = Depends(get_db)):
     # Check database connection
     try:
         # Try a simple database query
-        db.execute("SELECT 1")
+        db.execute(text("SELECT 1"))
         database_status = "connected"
     except Exception:
         database_status = "disconnected"
