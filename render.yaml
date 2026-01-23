@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: fitbit-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fitbit-db
+          property: connectionString
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: DEBUG
+        value: "false"
+      - key: RELOAD
+        value: "false"
+
+databases:
+  - name: fitbit-db
+    plan: free

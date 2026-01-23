@@ -5,11 +5,14 @@ from datetime import datetime
 import uuid
 from config import settings
 
-# Create engine
-engine = create_engine(
-    settings.database_url, 
-    connect_args={"check_same_thread": False}  # Needed for SQLite
-)
+# Create engine (SQLite requires check_same_thread=False, PostgreSQL does not)
+if settings.database_url.startswith("sqlite"):
+    engine = create_engine(
+        settings.database_url,
+        connect_args={"check_same_thread": False}
+    )
+else:
+    engine = create_engine(settings.database_url)
 
 # Create session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
