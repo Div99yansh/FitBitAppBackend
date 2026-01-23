@@ -94,6 +94,19 @@ async def root():
         "meals_endpoint": "/fitbit/getMeals"
     }
 
+# Debug endpoint to check config (remove in production)
+@app.get("/debug/config", tags=["Debug"])
+async def debug_config():
+    """Debug endpoint to check loaded configuration"""
+    import os
+    return {
+        "allowed_origins": settings.allowed_origins,
+        "allowed_origins_str": settings.allowed_origins_str,
+        "env_allowed_origins_str": os.environ.get("ALLOWED_ORIGINS_STR", "NOT SET"),
+        "debug": settings.debug,
+        "database_url_prefix": settings.database_url[:20] + "..." if len(settings.database_url) > 20 else settings.database_url
+    }
+
 if __name__ == "__main__":
     import uvicorn
     
