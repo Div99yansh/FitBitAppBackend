@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./meals.db"
 
     # CORS settings (stored as comma-separated string from env)
-    allowed_origins: str = "http://localhost:5173"
+    allowed_origins_str: str = "http://localhost:5173"
     allowed_methods: List[str] = ["GET", "POST", "PUT", "DELETE"]
     allowed_headers: List[str] = ["*"]
     allow_credentials: bool = True
@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     @computed_field
     @property
     def allowed_origins(self) -> List[str]:
-        return [origin.strip() for origin in self.allowed_origins.split(",")]
+        return [origin.strip() for origin in self.allowed_origins_str.split(",")]
 
     # Gemini API settings
     gemini_api_key: str = ""

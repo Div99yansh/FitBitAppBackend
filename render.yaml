@@ -14,7 +14,7 @@ services:
         sync: false
       - key: JWT_SECRET_KEY
         generateValue: true
-      - key: ALLOWED_ORIGINS
+      - key: ALLOWED_ORIGINS_STR
         sync: false
       - key: DEBUG
         value: "false"
